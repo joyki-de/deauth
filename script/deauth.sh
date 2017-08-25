@@ -29,7 +29,7 @@ then
 else
 	ORGINTERFACE="`echo "${1}" | cut -c 1-10`"
         echo ""
-	echo "Starte ${INTERFACE} im Monitor-Modus"
+	echo "Starte Monitor-Modus an "${ORGINTERFACE}
         echo ""
 fi
 
@@ -67,7 +67,7 @@ echo ""
 	while true
 	do
                 echo ""
-                echo "------------------------------------"
+                echo "--------------------------------------"
 		echo -n "BSSID eingeben:      "
 		read -e BSSID
 		echo -n "Kanal eingeben:      "
@@ -81,7 +81,7 @@ echo ""
 		echo "Ziel Kanal              : ${CHANNEL}"
                 echo "Wie oft angreifen       : ${ATKTIMER}"
                 echo "-------------------------------------------"
-		echo -n "Sind die Eingaben korrekt? (j / n): "
+		echo -n "Sind die Eingaben korrekt? (j/n): "
 	  	read -e CONFIRM
 	 	case $CONFIRM in
 	    		y|Y|YES|yes|Yes|j|J|ja|Ja)
